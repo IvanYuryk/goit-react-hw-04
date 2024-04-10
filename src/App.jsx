@@ -1,51 +1,77 @@
 import { useState, useEffect } from "react";
-import "./App.css";
-import contactsData from "./contacts.json";
-import ContactForm from "./components/ContactForm/ContactForm";
-import ContactList from "./components/ContactList/ContactList";
-import SearchBox from "./components/SearchBox/SearchBox";
+import SearchBar from "./components/SearchBar/SearchBar";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+import Loader from "./components/Loader/Loader";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
+import ImageModal from "./components/ImageModal/ImageModal";
+import { fetchImages } from "./services/api";
 
-function App() {
-  const [contacts, setContacts] = useState(() => {
-    const strignifiedContacts = localStorage.getItem("contacts");
-    if (!strignifiedContacts) return [contactsData];
+const App = () => {
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const parsedContacts = JSON.parse(strignifiedContacts);
-    return parsedContacts;
-  });
+  const openModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const closeModal = () => {
+    setSelectedImage(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSearchSubmit = (searchQuery) => {
+    setQuery(searchQuery);
+    setPage(1);
+    setImages([]);
+    setError(false);
+  };
 
   useEffect(() => {
-    localStorage.setItem("contacts", JSON.stringify(contacts));
-  }, [contacts]);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchImages(query, page);
+        setImages(data);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+    fetchData();
+  }, [query, page]);
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const deleteContact = (id) => {
-    setContacts((prevContacts) =>
-      prevContacts.filter((contact) => contact.id !== id)
-    );
-  };
-
-  const addContact = (newContact) => {
-    setContacts((prevContacts) => [...prevContacts, newContact]);
+  const loadMoreImages = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
   };
 
   return (
-    <div className="container">
-      <h1>Phonebook</h1>
-      <ContactForm onAddContact={addContact} />
-      <SearchBox searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-      <ContactList contacts={filteredContacts} onDelete={deleteContact} />
+    <div>
+      <SearchBar onSubmit={handleSearchSubmit} />
+      {isLoading && <Loader />}
+      {error && <ErrorMessage message="Failed to fetch images" />}
+      {images.length > 0 && (
+        <ImageGallery images={images} openModal={openModal} />
+      )}
+      {images.length > 0 && <LoadMoreBtn onClick={loadMoreImages} />}
+      {selectedImage && (
+        <ImageModal
+          isOpen={isModalOpen}
+          imageUrl={selectedImage}
+          closeModal={closeModal}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
