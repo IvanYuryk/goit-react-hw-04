@@ -1,7 +1,11 @@
-.contactList {
+ul {
   display: flex;
+  gap: 20px;
   flex-wrap: wrap;
-  gap: 16px;
-  max-width: 100%;
-  overflow: hidden;
+}
+
+li {
+  width: 420px;
+  height: 360px;
+  cursor: pointer;
 }

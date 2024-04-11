@@ -5,7 +5,6 @@
   transform: translate(-50%, -50%);
   background-color: white;
   padding: 20px;
-  border-radius: 8px;
   max-width: 80%;
   max-height: 80%;
   overflow: auto;
@@ -21,4 +20,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.userInfo {
+  margin-top: 20px;
+  font-size: 14px;
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
+import { FiSearch } from "react-icons/fi";
 
 import css from "./SearchBar.module.css";
 
@@ -27,10 +28,9 @@ const SearchBar = ({ onSubmit }) => {
   };
 
   return (
-    <header>
+    <header id="header">
       <form onSubmit={handleSubmit(submitHandler)}>
         <input
-          className={css.searchBox}
           type="text"
           autoComplete="on"
           autoFocus
@@ -40,8 +40,10 @@ const SearchBar = ({ onSubmit }) => {
           onKeyDown={handleKeyPress}
           value={query}
         />
-        <button type="submit">Search</button>
-        <Toaster />
+        <button className={css.searchBtn} type="submit">
+          <FiSearch size="16px" />
+        </button>
+        <Toaster position="top-left" aria-label="Search" />
       </form>
     </header>
   );
