@@ -1,21 +1,19 @@
 import axios from "axios";
 
-const fetchImages = async (query, page) => {
-    try {
-        const response = await axios.get(
-            `https://api.unsplash.com/search/photos`,
-            {
-                params: {
-                    query: query,
-                    page: page,
-                    client_id: "DWEIFMTlPfAxVuojH75lzqhCc2a8uuC5lBy8fDIH4sA",
-                },
-            }
-        );
-        return response.data.results;
-    } catch (error) {
-        throw new Error("Failed to fetch images");
-    }
-};
+const instance = axios.create({
+  baseURL: "https://api.unsplash.com",
+});
 
-export { fetchImages };
+export const fetchImagesSearch = async (query, pageNumber, pagination) => {
+  const response = await instance.get("/search/photos", {
+    params: {
+      client_id: "DWEIFMTlPfAxVuojH75lzqhCc2a8uuC5lBy8fDIH4sA",
+      query: query,
+      orientation: "landscape",
+      page: pageNumber,
+      per_page: pagination,
+    },
+  });
+
+  return response.data;
+};

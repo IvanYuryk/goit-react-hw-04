@@ -1,9 +1,7 @@
-import css from "./ImageCard.module.css";
-
-const ImageCard = ({ image, openModal }) => {
+const ImageCard = ({ id, alt_description, small, openModal }) => {
   return (
-    <div className={css.card} onClick={() => openModal(image.urls.regular)}>
-      <img src={image.urls.small} alt={image.alt_description} />
+    <div>
+      <img src={small} alt={alt_description} onClick={() => openModal(id)} />
     </div>
   );
 };

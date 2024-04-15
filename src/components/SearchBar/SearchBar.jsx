@@ -1,3 +1,48 @@
+// import { Formik, Form, Field } from "formik";
+// import * as Yup from "yup";
+// import css from "./SearchBar.module.css";
+// import toast, { Toaster } from "react-hot-toast";
+
+// const notify = () =>
+//   toast("Text must be entered to search for images.", {
+//     duration: 4000,
+//     position: "top-right",
+//     style: {
+//       backgroundColor: "orange",
+//       color: "white",
+//     },
+//   });
+
+// const SearchBar = ({ handleSubmit }) => {
+//   const validationSchema = Yup.object().shape({
+//     query: Yup.string().trim().required(notify),
+//   });
+
+//   return (
+//     <header className={css.header}>
+//       <Formik
+//         validationSchema={validationSchema}
+//         onSubmit={handleSubmit}
+//         initialValues={{ query: "" }}
+//       >
+//         <Form className={css.form}>
+//           <Field
+//             className={css.inputSearch}
+//             type="text"
+//             name="query"
+//             autoComplete="on"
+//             autoFocus
+//             placeholder="Search images and photos"
+//           />
+//           <button type="submit">Search</button>
+//         </Form>
+//       </Formik>
+//       <Toaster />
+//     </header>
+//   );
+// };
+
+// export default SearchBar;
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
@@ -5,8 +50,8 @@ import { FiSearch } from "react-icons/fi";
 
 import css from "./SearchBar.module.css";
 
-const SearchBar = ({ onSubmit }) => {
-  const { register, handleSubmit } = useForm();
+const SearchBar = ({ handleSubmit }) => {
+  const { register, handleSubmit: onSubmit } = useForm();
   const [query, setQuery] = useState("");
 
   const handleChange = (e) => {
@@ -18,7 +63,7 @@ const SearchBar = ({ onSubmit }) => {
       toast.error("Please enter a search query");
       return;
     }
-    onSubmit(query);
+    handleSubmit({ query });
   };
 
   const handleKeyPress = (e) => {
@@ -29,7 +74,7 @@ const SearchBar = ({ onSubmit }) => {
 
   return (
     <header id="header">
-      <form onSubmit={handleSubmit(submitHandler)}>
+      <form onSubmit={onSubmit(submitHandler)}>
         <input
           type="text"
           autoComplete="on"
